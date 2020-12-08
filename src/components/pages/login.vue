@@ -32,10 +32,10 @@ export default {
   },
   methods: {
     signIn() {
-      const api = `${process.env.API_PATH}/signin`;
+      const api = `${process.env.API_PATH}/admin/signin`;
       this.axios.post(api, this.user).then((res) => {
         console.log(res.data);
-        if (res.data.success) this.$router.push({ name: '/' });
+        if (res.data.success) this.$router.push('/');
       });
     },
   },

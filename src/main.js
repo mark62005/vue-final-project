@@ -9,6 +9,11 @@ import router from './router';
 Vue.config.productionTip = false;
 Vue.use(VueAxios, axios);
 
+// CORS
+// method 1
+axios.defaults.withCredentials = true;
+// method 2
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
