@@ -8,6 +8,13 @@
 <script>
 export default {
   name: 'App',
+  async created() {
+    const api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/products`;
+    console.log(process.env.API_PATH, process.env.CUSTOM_PATH);
+    this.axios.get(api).then((res) => {
+      console.log(res.data);
+    });
+  },
 };
 </script>
 
