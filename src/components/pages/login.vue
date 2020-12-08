@@ -35,7 +35,7 @@ export default {
       const api = `${process.env.API_PATH}/admin/signin`;
       this.axios.post(api, this.user).then((res) => {
         console.log(res.data);
-        if (res.data.success) this.$router.push('/');
+        if (res.data.success) this.$router.push({ name: 'home' });
       });
     },
   },

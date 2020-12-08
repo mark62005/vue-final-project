@@ -9,17 +9,21 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
+      name: 'home',
       component: HelloWorld,
+      // 要求驗證
+      meta: { requiresAuth: true },
     },
+
     {
       path: '/login',
       name: 'login',
       component: Login,
     },
+
     {
       path: '*',
-      redirect: '/',
+      redirect: '/login',
     },
   ],
 });
