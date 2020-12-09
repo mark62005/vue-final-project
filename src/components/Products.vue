@@ -3,7 +3,7 @@
     <div class="text-right mt-4">
       <button class="btn btn-primary"
         data-toggle="modal" data-target="#productModal"
-        @click="showModal"
+        @click="openModal(true)"
       >
         建立新的產品
       </button>
@@ -33,7 +33,10 @@
               <span v-show="!product.is_enabled">未啟用</span>
             </td>
             <td>
-              <button class="btn btn-outline-primary btn-sm">編輯</button>
+              <button class="btn btn-outline-primary btn-sm"
+                @click="openModal(false,product)"
+              >編輯
+              </button>
             </td>
           </tr>
         </tbody>
@@ -56,7 +59,7 @@
                   <div class="form-group">
                     <label for="image">輸入圖片網址</label>
                     <input type="text" class="form-control" id="image"
-                      v-model="tempProduct.imageUrl"
+                      v-model.trim="tempProduct.imageUrl"
                       placeholder="請輸入圖片連結"
                     />
                   </div>
@@ -76,7 +79,7 @@
                   <div class="form-group">
                     <label for="title">標題</label>
                     <input type="text" class="form-control" id="title"
-                      v-model="tempProduct.title"
+                      v-model.trim="tempProduct.title"
                       placeholder="請輸入標題"
                     />
                   </div>
@@ -85,14 +88,14 @@
                     <div class="form-group col-md-6">
                       <label for="category">分類</label>
                       <input type="text" class="form-control" id="category"
-                        v-model="tempProduct.category"
+                        v-model.trim="tempProduct.category"
                         placeholder="請輸入分類"
                       />
                     </div>
                     <div class="form-group col-md-6">
                       <label for="price">單位</label>
                       <input type="unit" class="form-control" id="unit"
-                        v-model="tempProduct.unit"
+                        v-model.trim="tempProduct.unit"
                         placeholder="請輸入單位"
                       />
                     </div>
@@ -102,14 +105,14 @@
                     <div class="form-group col-md-6">
                     <label for="origin_price">原價</label>
                       <input type="number" class="form-control" id="origin_price"
-                        v-model="tempProduct.origin_price"
+                        v-model.number="tempProduct.origin_price"
                         placeholder="請輸入原價"
                       />
                     </div>
                     <div class="form-group col-md-6">
                       <label for="price">售價</label>
                       <input type="number" class="form-control" id="price"
-                        v-model="tempProduct.price"
+                        v-model.number="tempProduct.price"
                         placeholder="請輸入售價"
                       />
                     </div>
@@ -119,14 +122,14 @@
                   <div class="form-group">
                     <label for="description">產品描述</label>
                     <textarea type="text" class="form-control" id="description"
-                      v-model="tempProduct.description"
+                      v-model.trim="tempProduct.description"
                       placeholder="請輸入產品描述"
                     ></textarea>
                   </div>
                   <div class="form-group">
                     <label for="content">說明內容</label>
                     <textarea type="text" class="form-control" id="content"
-                      v-model="tempProduct.content"
+                      v-model.trim="tempProduct.content"
                       placeholder="請輸入產品說明內容"
                     ></textarea>
                   </div>
@@ -147,12 +150,12 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-outline-secondary"
-                data-dismiss="modal">
-                取消
+                data-dismiss="modal"
+              >取消
               </button>
               <button type="button" class="btn btn-primary"
-                @click="updateProduct">
-                確認
+                @click="updateProduct"
+              >確認
               </button>
             </div>
           </div>
@@ -170,6 +173,7 @@ export default {
     return {
       products: undefined,
       tempProduct: {},
+      isNew: false,
     };
   },
   methods: {
@@ -179,12 +183,24 @@ export default {
         this.products = res.data.products;
       });
     },
-    showModal() {
+    openModal(isNew, item) {
+      if (isNew) {
+        this.tempProduct = {};
+        this.isNew = true;
+      } else {
+        this.tempProduct = Object.assign({}, item);
+        this.isNew = false;
+      }
       $('#productModal').modal('show');
     },
     updateProduct() {
-      const api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/product`;
-      this.$http.post(api, { data: this.tempProduct }).then((res) => {
+      let api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/product`;
+      let httpMethod = 'post';
+      if (!this.isNew) {
+        api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/product/${this.tempProduct.id}`;
+        httpMethod = 'put';
+      }
+      this.$http[httpMethod](api, { data: this.tempProduct }).then((res) => {
         console.log(res.data);
         $('#productModal').modal('hide');
         this.getProducts();
