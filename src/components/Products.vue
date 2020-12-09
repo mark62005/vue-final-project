@@ -34,8 +34,12 @@
             </td>
             <td>
               <button class="btn btn-outline-primary btn-sm"
-                @click="openModal(false,product)"
+                @click="openModal(false,product.id)"
               >編輯
+              </button>
+              <button class="btn btn-outline-primary btn-sm"
+                @click="deleteProduct(product.id)"
+              >刪除
               </button>
             </td>
           </tr>
@@ -50,7 +54,7 @@
             <div class="modal-header bg-dark text-white">
               <h5 class="modal-title" id="productModalLabel">新增產品</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+                <span class="text-white" aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
@@ -183,12 +187,14 @@ export default {
         this.products = res.data.products;
       });
     },
-    openModal(isNew, item) {
+    openModal(isNew, id) {
+      const index = this.products.findIndex(item => item.id === id);
+      const target = this.products[index];
       if (isNew) {
         this.tempProduct = {};
         this.isNew = true;
       } else {
-        this.tempProduct = Object.assign({}, item);
+        this.tempProduct = Object.assign({}, target);
         this.isNew = false;
       }
       $('#productModal').modal('show');
@@ -201,11 +207,19 @@ export default {
         httpMethod = 'put';
       }
       this.$http[httpMethod](api, { data: this.tempProduct }).then((res) => {
-        console.log(res.data);
         $('#productModal').modal('hide');
         this.getProducts();
-        if (res.data.success) console.log('新增成功');
-        else console.log('新增失敗');
+        if (res.data.success) console.log(res.data.message);
+        else console.log(res.data.message);
+      });
+    },
+    deleteProduct(id) {
+      // const index = this.products.findIndex(item=>item.id == id)
+      // let target = this.products[index]
+      const api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/product/${id}`;
+      this.$http.delete(api).then((res) => {
+        console.log(res.data.message);
+        this.getProducts();
       });
     },
   },
