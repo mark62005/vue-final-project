@@ -5,7 +5,7 @@ import Dashboard from '@/components/pages/Dashboard';
 import Products from '@/components/pages/Products';
 import Orders from '@/components/pages/Orders';
 import Coupons from '@/components/pages/Coupons';
-
+import CustomerOrders from '@/components/pages/CustomerOrders';
 
 Vue.use(Router);
 
@@ -19,7 +19,7 @@ export default new Router({
 
     {
       path: '/admin',
-      name: 'dashboard',
+      name: 'adminDashboard',
       component: Dashboard,
       meta: { requiresAuth: true },
       children: [
@@ -42,6 +42,19 @@ export default new Router({
           name: 'coupons',
           component: Coupons,
           meta: { requiresAuth: true },
+        },
+      ],
+    },
+
+    {
+      path: '/',
+      name: 'dashboard',
+      component: Dashboard,
+      children: [
+        {
+          path: 'customer-order',
+          name: 'customerOrder',
+          component: CustomerOrders,
         },
       ],
     },
