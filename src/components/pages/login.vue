@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Alert />
     <form class="form-signin" @submit.prevent="signIn">
       <h1 class="h3 mb-3 font-weight-normal">請先登入</h1>
       <label for="inputEmail" class="sr-only">電子信箱</label>
@@ -20,6 +21,8 @@
 </template>
 
 <script>
+import Alert from '../AlertMessage';
+
 export default {
   name: '',
   data() {
@@ -30,12 +33,16 @@ export default {
       },
     };
   },
+  components: {
+    Alert,
+  },
   methods: {
     signIn() {
       const api = `${process.env.API_PATH}/admin/signin`;
       this.axios.post(api, this.user).then((res) => {
         // console.log(res.data);
         if (res.data.success) {
+          this.$bus.$emit('message:push', res.data.message, 'success');
           // CORS method 2
           // 取得 token & expired
           const token = res.data.token;
@@ -43,8 +50,8 @@ export default {
           // 前端 setCookie   自訂cookieName               expired -> 一般的 time format
           document.cookie = `hexToken=${token}; expires=${new Date(expired)}; path=/`;
           // 最後才換頁
-          this.$router.push({ name: 'adminProducts' });
-        }
+          this.$router.push({ name: 'products' });
+        } else this.$bus.$emit('message:push', res.data.message, 'danger');
       });
     },
   },

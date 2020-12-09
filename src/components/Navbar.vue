@@ -7,9 +7,23 @@
       >
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-          <a class="nav-link" href="#">Sign out</a>
+          <a class="nav-link" href="#" @click.prevent="logOut">登出</a>
         </li>
       </ul>
     </nav>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'Navbar',
+  methods: {
+    logOut() {
+      const api = `${process.env.API_PATH}/logout`;
+      this.$http.post(api).then((res) => {
+        if (res.data.success) { this.$router.push({ name: 'login' }); }
+      });
+    },
+  },
+};
+</script>

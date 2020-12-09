@@ -37,7 +37,6 @@ router.beforeEach((to, from, next) => {
     // console.log('這裡需要驗證 !');
     const api = `${process.env.API_PATH}/api/user/check`;
     axios.post(api).then((res) => {
-      console.log(res.data.message);
       if (res.data.success) next();
       else next({ name: 'login' });
     });

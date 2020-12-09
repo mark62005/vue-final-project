@@ -226,7 +226,7 @@ export default {
       this.$http[httpMethod](api, { data: this.tempProduct }).then((res) => {
         $('#productModal').modal('hide');
         this.getProducts();
-        if (res.data.success) console.log(res.data.message);
+        if (res.data.success) this.$bus.$emit('message:push', res.data.message, 'success');
         else this.$bus.$emit('message:push', res.data.message, 'danger');
       });
     },
