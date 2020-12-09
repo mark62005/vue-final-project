@@ -34,8 +34,17 @@ export default {
     signIn() {
       const api = `${process.env.API_PATH}/admin/signin`;
       this.axios.post(api, this.user).then((res) => {
-        console.log(res.data);
-        if (res.data.success) this.$router.push({ name: 'adminProducts' });
+        // console.log(res.data);
+        if (res.data.success) {
+          // CORS method 2
+          // 取得 token & expired
+          const token = res.data.token;
+          const expired = res.data.expired;
+          // 前端 setCookie   自訂cookieName               expired -> 一般的 time format
+          document.cookie = `hexToken=${token}; expires=${new Date(expired)}; path=/`;
+          // 最後才換頁
+          this.$router.push({ name: 'adminProducts' });
+        }
       });
     },
   },
