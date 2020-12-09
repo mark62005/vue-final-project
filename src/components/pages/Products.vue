@@ -222,13 +222,7 @@ export default {
         api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/product/${this.tempProduct.id}`;
         httpMethod = 'put';
       }
-      // if (!this.tempProduct.catergory) {
-      //   this.tempProduct.catergory = '未分類';
-      // } else if (!this.tempProduct.origin_price) {
-      //   this.tempProduct.origin_price = 0;
-      // } else if (!this.tempProduct.price) {
-      //   this.tempProduct.price = 0;
-      // }
+      if (!this.tempProduct) return;
       this.$http[httpMethod](api, { data: this.tempProduct }).then((res) => {
         $('#productModal').modal('hide');
         this.getProducts();
