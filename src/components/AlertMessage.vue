@@ -50,7 +50,7 @@ export default {
     this.$bus.$on('message:push', (message, status = 'warning') => {
       this.updateMessage(message, status);
     });
-    this.$bus.$emit('message:push');
+    // this.$bus.$emit('message:push');
   },
 };
 </script>
