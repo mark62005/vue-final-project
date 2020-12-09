@@ -72,7 +72,7 @@
                       <i class="fas fa-spinner fa-spin"></i>
                     </label>
                     <input type="file" id="customFile" class="form-control"
-                      ref="files"
+                      ref="files" @change="uploadImage"
                     />
                   </div>
                   <img img="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=828346ed697837ce808cae68d3ddc3cf&auto=format&fit=crop&w=1350&q=80"
@@ -220,6 +220,23 @@ export default {
       this.$http.delete(api).then((res) => {
         console.log(res.data.message);
         this.getProducts();
+      });
+    },
+    uploadImage() {
+      // console.log(this.$refs);
+      const uploadedImage = this.$refs.files.files[0];
+      const formData = new FormData();
+      formData.append('file-to-upload', uploadedImage);
+      const url = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/upload`;
+      this.$http.post(url, formData, {
+        header: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }).then((res) => {
+        if (res.data.success) {
+          // this.tempProduct.imageUrl = res.data.imageUrl;
+          this.$set(this.tempProduct, 'imageUrl', res.data.imageUrl);
+        }
       });
     },
   },
