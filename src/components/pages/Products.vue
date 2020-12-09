@@ -12,7 +12,7 @@
       <table class="table mt-4">
         <thead>
           <tr>
-            <th width="120">分類</th>
+            <th width="120" class="text-left">分類</th>
             <th>產品名稱</th>
             <th width="120">原價</th>
             <th width="120">售價</th>
@@ -25,32 +25,28 @@
             <td>{{ product.category }}</td>
             <td>{{ product.title }}</td>
             <td class="text-right">
-              {{ product.origin_price }}
+                {{ product.origin_price | currency }}
             </td>
             <td class="text-right">
-              {{ product.price }}
+                {{ product.price | currency }}
             </td>
             <td>
-              <span v-show="product.is_enabled" class="text-success">啟用</span>
-              <span v-show="!product.is_enabled">未啟用</span>
+              <span v-if="product.is_enabled" class="text-success">啟用</span>
+              <span v-else>未啟用</span>
             </td>
             <td>
               <button class="btn btn-outline-primary btn-sm"
                 @click="openModal(false,product.id)"
-              >編輯
-              </button>
+              >編輯</button>
               <button class="btn btn-outline-primary btn-sm"
                 @click="deleteProduct(product.id)"
-              >刪除
-              </button>
+              >刪除</button>
             </td>
           </tr>
         </tbody>
       </table>
       <!-- pagination -->
-      <Pagination :pagination="pagination"
-        @change-page="getProducts"
-      />
+      <Pagination :pagination="pagination" @change-page="getProducts" />
       <!-- Modal -->
       <div class="modal fade" id="productModal" tabindex="-1"
         role="dialog" aria-labelledby="productModalLabel" aria-hidden="true"
@@ -90,7 +86,7 @@
                     <label for="title">標題</label>
                     <input type="text" class="form-control" id="title"
                       v-model.trim="tempProduct.title"
-                      placeholder="請輸入標題"
+                      placeholder="請輸入標題" required
                     />
                   </div>
 
@@ -99,14 +95,14 @@
                       <label for="category">分類</label>
                       <input type="text" class="form-control" id="category"
                         v-model.trim="tempProduct.category"
-                        placeholder="請輸入分類"
+                        placeholder="請輸入分類" required
                       />
                     </div>
                     <div class="form-group col-md-6">
                       <label for="price">單位</label>
                       <input type="unit" class="form-control" id="unit"
                         v-model.trim="tempProduct.unit"
-                        placeholder="請輸入單位"
+                        placeholder="請輸入單位" required
                       />
                     </div>
                   </div>
@@ -116,14 +112,14 @@
                     <label for="origin_price">原價</label>
                       <input type="number" class="form-control" id="origin_price"
                         v-model.number="tempProduct.origin_price"
-                        placeholder="請輸入原價"
+                        placeholder="請輸入原價" required
                       />
                     </div>
                     <div class="form-group col-md-6">
                       <label for="price">售價</label>
                       <input type="number" class="form-control" id="price"
                         v-model.number="tempProduct.price"
-                        placeholder="請輸入售價"
+                        placeholder="請輸入售價" required
                       />
                     </div>
                   </div>
@@ -177,12 +173,12 @@
 
 <script>
 import $ from 'jquery';
-import Pagination from './Pagination';
+import Pagination from '../Pagination';
 
 export default {
   data() {
     return {
-      products: undefined,
+      products: [],
       tempProduct: {},
       isNew: false,
       isLoading: false,
@@ -194,6 +190,8 @@ export default {
   },
   components: {
     Pagination,
+  },
+  computed: {
   },
   methods: {
     getProducts(page = 1) {
@@ -224,6 +222,13 @@ export default {
         api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/admin/product/${this.tempProduct.id}`;
         httpMethod = 'put';
       }
+      // if (!this.tempProduct.catergory) {
+      //   this.tempProduct.catergory = '未分類';
+      // } else if (!this.tempProduct.origin_price) {
+      //   this.tempProduct.origin_price = 0;
+      // } else if (!this.tempProduct.price) {
+      //   this.tempProduct.price = 0;
+      // }
       this.$http[httpMethod](api, { data: this.tempProduct }).then((res) => {
         $('#productModal').modal('hide');
         this.getProducts();
