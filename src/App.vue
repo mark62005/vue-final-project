@@ -14,7 +14,7 @@ export default {
     this.axios.get(api).then(() => {
       // console.log(res.data);
       console.log('GET DATA SUCCESS');
-    });
+    }).catch(res => this.$bus.$emit('message:push', res.data.message, 'danger'));
   },
 };
 </script>

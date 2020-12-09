@@ -1,5 +1,6 @@
 <template>
   <div>
+    <loading :active.sync="isLoading"></loading>
     <div class="text-right mt-4">
       <button class="btn btn-primary"
         data-toggle="modal" data-target="#productModal"
@@ -49,7 +50,7 @@
       <div class="modal fade" id="productModal" tabindex="-1"
         role="dialog" aria-labelledby="productModalLabel" aria-hidden="true"
       >
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-lg text-left" role="document">
           <div class="modal-content border-0">
             <div class="modal-header bg-dark text-white">
               <h5 class="modal-title" id="productModalLabel">新增產品</h5>
@@ -69,7 +70,7 @@
                   </div>
                   <div class="form-group">
                     <label for="customFile">或 上傳圖片
-                      <i class="fas fa-spinner fa-spin"></i>
+                      <i class="fas fa-spinner fa-spin" v-if="status.fileUploading"></i>
                     </label>
                     <input type="file" id="customFile" class="form-control"
                       ref="files" @change="uploadImage"
@@ -178,13 +179,19 @@ export default {
       products: undefined,
       tempProduct: {},
       isNew: false,
+      isLoading: false,
+      status: {
+        uploadingFile: false,
+      },
     };
   },
   methods: {
     getProducts() {
       const api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/products`;
+      this.isLoading = true;
       this.$http.get(api).then((res) => {
         this.products = res.data.products;
+        this.isLoading = false;
       });
     },
     openModal(isNew, id) {
@@ -210,7 +217,7 @@ export default {
         $('#productModal').modal('hide');
         this.getProducts();
         if (res.data.success) console.log(res.data.message);
-        else console.log(res.data.message);
+        else this.$bus.$emit('message:push', res.data.message, 'danger');
       });
     },
     deleteProduct(id) {
@@ -236,7 +243,7 @@ export default {
         if (res.data.success) {
           // this.tempProduct.imageUrl = res.data.imageUrl;
           this.$set(this.tempProduct, 'imageUrl', res.data.imageUrl);
-        }
+        } else this.$bus.$emit('message:push', res.data.message, 'danger');
       });
     },
   },

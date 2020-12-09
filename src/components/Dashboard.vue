@@ -1,6 +1,7 @@
 <template>
   <div>
     <Navbar />
+    <Alert />
     <div class="container-fluid">
       <div class="row">
         <Sidebar />
@@ -15,11 +16,13 @@
 <script>
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
+import Alert from './AlertMessage';
 
 export default {
   components: {
     Navbar,
     Sidebar,
+    Alert,
   },
   // CORS method 2
   created() {
