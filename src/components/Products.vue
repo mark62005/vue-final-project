@@ -48,28 +48,9 @@
         </tbody>
       </table>
       <!-- pagination -->
-      <nav aria-label="Page navigation example">
-        <ul class="pagination">
-          <li class="page-item" :class="{ 'disabled': !pagination.has_pre }">
-            <a class="page-link" href="#" aria-label="Previous"
-              @click.prevent="getProducts(pagination.current_page - 1)">
-              <span aria-hidden="true">&laquo;</span>
-              <span class="sr-only">Previous</span>
-            </a>
-          </li>
-          <li class="page-item" v-for="page in pagination.total_pages" :key="page"
-            :class="{ active: page === pagination.current_page}">
-            <a class="page-link" href="#" @click.prevent="getProducts(page)">{{ page }}</a>
-          </li>
-          <li class="page-item" :class="{ 'disabled': !pagination.has_next }">
-            <a class="page-link" href="#" aria-label="Next"
-              @click.prevent="getProducts(pagination.current_page + 1)">
-              <span aria-hidden="true">&raquo;</span>
-              <span class="sr-only">Next</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
+      <Pagination :pagination="pagination"
+        @change-page="getProducts"
+      />
       <!-- Modal -->
       <div class="modal fade" id="productModal" tabindex="-1"
         role="dialog" aria-labelledby="productModalLabel" aria-hidden="true"
@@ -196,6 +177,7 @@
 
 <script>
 import $ from 'jquery';
+import Pagination from './Pagination';
 
 export default {
   data() {
@@ -210,6 +192,9 @@ export default {
       pagination: {},
     };
   },
+  components: {
+    Pagination,
+  },
   methods: {
     getProducts(page = 1) {
       const api = `${process.env.API_PATH}/api/${process.env.CUSTOM_PATH}/products?page=${page}`;
@@ -217,7 +202,6 @@ export default {
       this.$http.get(api).then((res) => {
         this.products = res.data.products;
         this.pagination = res.data.pagination;
-        console.log(this.pagination);
         this.isLoading = false;
       });
     },
