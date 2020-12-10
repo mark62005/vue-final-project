@@ -39,5 +39,8 @@ export default {
       this.$emit('change-page', page);
     },
   },
+  async created() {
+    console.log(this.pagination);
+  },
 };
 </script>

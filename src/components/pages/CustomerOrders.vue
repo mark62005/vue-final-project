@@ -8,15 +8,27 @@
             :style="{ 'background-image': `url(${product.imageUrl})` }">
           </div>
           <div class="card-body">
-            <span class="badge badge-secondary float-right ml-2">{{ product.category }}</span>
+            <span class="badge badge-secondary float-right ml-2">
+              {{ product.category }}
+            </span>
             <h5 class="card-title">
-              <a href="#" class="text-dark">{{ product.title }}</a>
+              <a href="#" class="text-dark">
+                {{ product.title }}
+              </a>
             </h5>
-            <p class="card-text">{{ product.content }}</p>
+            <p class="card-text">
+              {{ product.content }}
+            </p>
             <div class="d-flex justify-content-between align-items-baseline">
-              <div class="h5" v-if="!product.price">{{ product.origin_price }} 元</div>
-              <del class="h6">原價 {{ product.origin_price }} 元</del>
-              <div class="h5">現在只要 {{ product.price }} 元</div>
+              <div class="h5" v-if="!product.price">
+                {{ product.origin_price | currency  }} 元
+              </div>
+              <del class="h6">
+                原價 {{ product.origin_price | currency  }} 元
+              </del>
+              <div class="h5">
+                現在只要 {{ product.price | currency  }} 元
+              </div>
             </div>
           </div>
           <div class="card-footer d-flex">
@@ -37,7 +49,6 @@
 </template>
 
 <script>
-import Alert from '../AlertMessage';
 import Pagination from '../Pagination';
 
 export default {
@@ -45,12 +56,11 @@ export default {
   data() {
     return {
       products: undefined,
-      pagination: undefined,
+      pagination: {},
       isLoading: false,
     };
   },
   components: {
-    Alert,
     Pagination,
   },
   methods: {
